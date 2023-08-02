@@ -29,7 +29,17 @@
 
 .logseq-image-editor-main .top-bar .icon-button {
   cursor: pointer;
-  margin: 0 16px;
+  margin: 0 8px;
+  padding: 8px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.logseq-image-editor-main .top-bar .icon-button:hover {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .logseq-image-editor-main .main {
