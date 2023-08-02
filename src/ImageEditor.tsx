@@ -3,9 +3,10 @@ import ImageEditor from "tui-image-editor";
 
 interface ImageEditorProps {
   path: string;
+  uuid: string;
 }
 
-const ImageEditorComponent: React.FC<ImageEditorProps> = ({ path }) => {
+const ImageEditorComponent: React.FC<ImageEditorProps> = ({ path, uuid }) => {
   const editorRef = useRef<ImageEditor | null>(null);
 
   const handleInsert = () => {
@@ -22,9 +23,19 @@ const ImageEditorComponent: React.FC<ImageEditorProps> = ({ path }) => {
             buffer as any
           )
           .then((one) => {
-            logseq.UI.showMsg(`SAVE DONE 🎉 - ${one}`, "success");
+            logseq.UI.showMsg(`Save done 🎉 - ${one}`, "success");
 
-            // 将图片插入到下一个 block
+            const imagePath = (one as unknown as string).split("assets")[1];
+            logseq.Editor.insertBlock(
+              uuid,
+              `![${imageName}](../assets${imagePath})`
+            )
+              .then(() => {
+                logseq.UI.showMsg(`Insert block success 🎉`, "success");
+              })
+              .catch((e) => {
+                logseq.UI.showMsg(JSON.stringify(e.message || e), "error");
+              });
           });
       });
   };

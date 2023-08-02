@@ -6,9 +6,11 @@ import ImageEditor from "./ImageEditor";
 function App() {
   const visible = useAppVisible();
   const [imageUrls, setImageUrls] = useState<string[] | null>(null);
+  const [uuid, setUuid] = useState("");
 
   const init = () => {
     logseq.Editor.registerBlockContextMenuItem("image editor", async (res) => {
+      setUuid(res.uuid);
       const currentGraph = await logseq.App.getCurrentGraph();
       const path = currentGraph?.path;
       const block = await logseq.Editor.getBlock(res.uuid);
@@ -41,7 +43,9 @@ function App() {
   if (visible) {
     return (
       <main className="logseq-image-editor-main">
-        {imageUrls && !!imageUrls.length && <ImageEditor path={imageUrls[0]} />}
+        {imageUrls && !!imageUrls.length && (
+          <ImageEditor uuid={uuid} path={imageUrls[0]} />
+        )}
       </main>
     );
   }
