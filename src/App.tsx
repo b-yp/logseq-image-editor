@@ -1,22 +1,47 @@
-import React, { useRef } from "react";
+import React, { useEffect, useState } from "react";
+
 import { useAppVisible } from "./utils";
+import ImageEditor from "./ImageEditor";
 
 function App() {
-  const innerRef = useRef<HTMLDivElement>(null);
   const visible = useAppVisible();
+  const [imageUrls, setImageUrls] = useState<string[] | null>(null);
+
+  const init = () => {
+    logseq.Editor.registerBlockContextMenuItem("image editor", async (res) => {
+      const currentGraph = await logseq.App.getCurrentGraph();
+      const path = currentGraph?.path;
+      const block = await logseq.Editor.getBlock(res.uuid);
+      const text = block?.content;
+
+      if (!text) return;
+
+      const imageRegex = /!\[.*?\]\((.*?)\)/g;
+      const matches = text.match(imageRegex);
+
+      if (matches && matches.length) {
+        const imageUrls = matches.map(
+          (match) =>
+            `${path}${(match.match(/!\[.*?\]\((.*?)\)/) || [])[1].substring(2)}`
+        );
+        setImageUrls(imageUrls);
+      } else {
+        logseq.UI.showMsg("No image URLs found.", "warning");
+        console.log("No image URLs found.");
+      }
+
+      logseq.showMainUI();
+    });
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
   if (visible) {
     return (
-      <main
-        className="logseq-image-editor-main"
-        onClick={(e) => {
-          if (!innerRef.current?.contains(e.target as any)) {
-            window.logseq.hideMainUI();
-          }
-        }}
-      >
-        <div ref={innerRef} className="text-size-2em">
-          Welcome to [[Logseq]] Plugins!
-        </div>
+      <main className="logseq-image-editor-main">
+        {imageUrls && !!imageUrls.length && <ImageEditor path={imageUrls[0]} />}
       </main>
     );
   }
