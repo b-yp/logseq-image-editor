@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/b-yp/logseq-image-editor/compare/v1.0.0...v1.0.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* Fix the issue of not being able to close without images ([c87ae47](https://github.com/b-yp/logseq-image-editor/commit/c87ae473b3ebc0a9f7dcd0daf4d1f09444e62367))
+
 # 1.0.0 (2023-08-02)
 
 
