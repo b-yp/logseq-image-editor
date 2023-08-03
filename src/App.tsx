@@ -27,12 +27,12 @@ function App() {
             `${path}${(match.match(/!\[.*?\]\((.*?)\)/) || [])[1].substring(2)}`
         );
         setImageUrls(imageUrls);
+        logseq.showMainUI();
       } else {
+        logseq.hideMainUI();
         logseq.UI.showMsg("No image URLs found.", "warning");
         console.log("No image URLs found.");
       }
-
-      logseq.showMainUI();
     });
   };
 
