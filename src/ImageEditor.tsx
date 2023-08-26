@@ -14,54 +14,82 @@ const ImageEditorComponent: React.FC<ImageEditorProps> = ({ path, uuid }) => {
     const imageName = editorRef.current?.getImageName();
     const imageBase64 = editorRef.current?.toDataURL() as string;
 
-    fetch(imageBase64)
-      .then((response) => response.arrayBuffer())
-      .then((buffer) => {
-        storage
-          .setItem(
-            decodeURIComponent(`${imageName}_${Date.now()}.png`),
-            buffer as any
-          )
-          .then((one) => {
-            logseq.UI.showMsg(`Save done 🎉 - ${one}`, "success");
-
-            const imagePath = (one as unknown as string).split("assets")[1];
-            logseq.Editor.insertBlock(
-              uuid,
-              `![${imageName}](../assets${imagePath})`
+    return new Promise<void>((res, rej) => {
+      fetch(imageBase64)
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => {
+          storage
+            .setItem(
+              decodeURIComponent(`${imageName}_${Date.now()}.png`),
+              buffer as any
             )
-              .then(() => {
-                logseq.UI.showMsg(`Insert block success 🎉`, "success");
-              })
-              .catch((e) => {
-                logseq.UI.showMsg(JSON.stringify(e.message || e), "error");
-              });
-          });
-      });
+            .then((one) => {
+              logseq.UI.showMsg(`Save done 🎉 - ${one}`, "success");
+
+              const imagePath = (one as unknown as string).split("assets")[1];
+              logseq.Editor.insertBlock(
+                uuid,
+                `![${imageName}](../assets${imagePath})`
+              )
+                .then(() => {
+                  logseq.UI.showMsg(`Insert block success 🎉`, "success");
+                  res();
+                })
+                .catch((e) => {
+                  logseq.UI.showMsg(JSON.stringify(e.message || e), "error");
+                  rej();
+                });
+            });
+        });
+    });
   };
 
   useEffect(() => {
-    if (!editorRef.current) {
-      // 初始化 Image-editor
-      editorRef.current = new ImageEditor(
-        document.querySelector("#tui-image-editor") as Element,
-        {
-          includeUI: {
-            loadImage: {
-              path,
-              name: "sampleImage",
-            },
-            theme: {
-              // 主题样式设置（可选）
-            },
-            initMenu: "filter",
+    // 初始化 Image-editor
+    editorRef.current = new ImageEditor(
+      document.querySelector("#tui-image-editor") as Element,
+      {
+        includeUI: {
+          loadImage: {
+            path,
+            name: "sampleImage",
           },
-          cssMaxWidth: 700,
-          cssMaxHeight: 500,
-          usageStatistics: false,
+          theme: {
+            // 主题样式设置（可选）
+          },
+          initMenu: "filter",
+        },
+        cssMaxWidth: 700,
+        cssMaxHeight: 500,
+        usageStatistics: false,
+      }
+    );
+  }, [path]);
+
+  useEffect(() => {
+    // 按 ESC 键关闭弹窗
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key === "Escape") {
+          logseq.hideMainUI();
         }
-      );
-    }
+        e.stopPropagation();
+      },
+      false
+    );
+    // 按 Ctrl + Enter 键保存图片并关闭编辑器
+    document.addEventListener(
+      "keydown",
+      async function (e) {
+        if (e.key === "Enter" && e.metaKey) {
+          await handleInsert();
+          logseq.hideMainUI();
+        }
+        e.stopPropagation();
+      },
+      false
+    );
   }, []);
 
   return (

@@ -5,11 +5,11 @@ import ImageEditor from "./ImageEditor";
 
 function App() {
   const visible = useAppVisible();
-  const [imageUrls, setImageUrls] = useState<string[] | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [uuid, setUuid] = useState("");
 
   const init = () => {
-    logseq.Editor.registerBlockContextMenuItem("image editor", async (res) => {
+    logseq.Editor.registerBlockContextMenuItem("Image Editor", async (res) => {
       setUuid(res.uuid);
       const currentGraph = await logseq.App.getCurrentGraph();
       const path = currentGraph?.path;
@@ -26,7 +26,7 @@ function App() {
           (match) =>
             `${path}${(match.match(/!\[.*?\]\((.*?)\)/) || [])[1].substring(2)}`
         );
-        setImageUrls(imageUrls);
+        setImageUrl(imageUrls[0]);
         logseq.showMainUI();
       } else {
         logseq.hideMainUI();
@@ -43,9 +43,7 @@ function App() {
   if (visible) {
     return (
       <main className="logseq-image-editor-main">
-        {imageUrls && !!imageUrls.length && (
-          <ImageEditor uuid={uuid} path={imageUrls[0]} />
-        )}
+        {imageUrl && <ImageEditor uuid={uuid} path={imageUrl} />}
       </main>
     );
   }
