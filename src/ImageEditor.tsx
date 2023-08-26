@@ -41,28 +41,26 @@ const ImageEditorComponent: React.FC<ImageEditorProps> = ({ path, uuid }) => {
   };
 
   useEffect(() => {
-    if (!editorRef.current) {
-      // 初始化 Image-editor
-      editorRef.current = new ImageEditor(
-        document.querySelector("#tui-image-editor") as Element,
-        {
-          includeUI: {
-            loadImage: {
-              path,
-              name: "sampleImage",
-            },
-            theme: {
-              // 主题样式设置（可选）
-            },
-            initMenu: "filter",
+    // 初始化 Image-editor
+    editorRef.current = new ImageEditor(
+      document.querySelector("#tui-image-editor") as Element,
+      {
+        includeUI: {
+          loadImage: {
+            path,
+            name: "sampleImage",
           },
-          cssMaxWidth: 700,
-          cssMaxHeight: 500,
-          usageStatistics: false,
-        }
-      );
-    }
-  }, []);
+          theme: {
+            // 主题样式设置（可选）
+          },
+          initMenu: "filter",
+        },
+        cssMaxWidth: 700,
+        cssMaxHeight: 500,
+        usageStatistics: false,
+      }
+    );
+  }, [path]);
 
   return (
     <>
