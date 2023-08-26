@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/b-yp/logseq-image-editor/compare/v1.0.1...v1.1.0) (2023-08-26)
+
+
+### Bug Fixes
+
+* Fix always load previous image ([2a453d7](https://github.com/b-yp/logseq-image-editor/commit/2a453d70d5c9d5ef9b779b46aedb71a3909bedf4))
+
+
+### Features
+
+* Add shortcut keys ([239947f](https://github.com/b-yp/logseq-image-editor/commit/239947f6558b78640dcff8740c86ceb783030d9f))
+
 ## [1.0.1](https://github.com/b-yp/logseq-image-editor/compare/v1.0.0...v1.0.1) (2023-08-03)
 
 
